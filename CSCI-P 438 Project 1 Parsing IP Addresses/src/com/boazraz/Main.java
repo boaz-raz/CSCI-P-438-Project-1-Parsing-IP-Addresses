@@ -68,6 +68,7 @@ public class Main {
 
     }
 
+
     public static int ConvertToIp (Long l2) {
         try {
 
@@ -89,14 +90,27 @@ public class Main {
                 separator = ".";
             }
 
-            System.out.println(s4); // testing
+//            System.out.println(s4); // testing
             validIP(s4); // call validIP method to test if ip is valid
 
-            //
+            // flip small endian
             Collections.reverse(Arrays.asList(thisCombo2));
+
+//            TESTING
+
+            String separator2 = "";  // separator here is your "."
+            String s6 = "";
+            // print array for testing
             for (String s : thisCombo2) {
-                System.out.println(s);
+                int i = parseInt(s, 2);
+                String s5 =  Integer.toString(i);
+                s6 += (separator2 + s5);
+                separator2 = ".";
             }
+
+            System.out.println(s6); // testing
+            validIP(s6);
+
 
         } catch (NumberFormatException nfe) {
 
