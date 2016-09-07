@@ -1,78 +1,101 @@
 package com.boazraz;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 
 import static java.lang.Integer.parseInt;
 
-public class Main {
+
+
+public class Main  {
 
     public static void main(String[] args) {
 
-//
-//        validIP("");
-//        validIP("192.169.1.1.1");
-//        validIP("256.1.1.1");
-//        validIP("-1");
-//        validIP("192.168.0.1");
-//
-//        validIP("192.168.1a.1");
-        ConvertToIp(3232235521L);
 
+        String p1 = args[0]; //p1
+        String p2 = args[1]; //p2
+        String p3 = args[2]; //p3
+
+        test(p1, p2, p3);
 
 
     } // end main
 
 
-    public static boolean validIP (String ip) {
+    public static void test(String p1, String p2, String p3) {
+        if (p1.equals("0")) {
+            validIP(p1,p2,p3);
+        } else if (p1.equals("1")) {
+            endian(p1, p2, p3);
+        } else {
+            System.out.println("ERROR");
+
+        }
+    }
+
+    public static boolean validIP(String p1, String p2, String p3) {
         try {
-            if ( ip == null || ip.isEmpty() ) {
-                System.out.println("String is empty");
-                return false;
-
-            }
-
-            String[] parts = ip.split( "\\." );
-            if ( parts.length != 4 ) {
-                System.out.println("ip is longer or shouter than 4 a.b.c.d..");
+            if (p2 == null || p2.isEmpty()) {
+                System.out.println("ERROR");
                 return false;
             }
 
-            for ( String s : parts ) {
-                int i = parseInt( s );
-                if ( (i < 0) || (i > 255) ) {
-                    System.out.println("ip is out of range");
+            String[] parts = p2.split("\\.");
+            if (parts.length != 4) {
+                System.out.println("ERROR");
+                return false;
+            }
+
+            for (String s : parts) {
+                int i = parseInt(s);
+                if ((i < 0) || (i > 255)) {
+                    System.out.println("ERROR");
                     return false;
                 }
             }
-            if ( ip.endsWith(".") ) {
+            if (p2.endsWith(".")) {
+                System.out.println("ERROR");
                 return false;
             }
 
-            // add the parted int
-            System.out.println("I'm parsing now...");
-            for ( String s : parts ) {
-                int i = parseInt( s );
-               // int i = Integer.parseInt(s,2);
-                System.out.println(Integer.toString(i,2));
+            // Convert and print to long decimal
+            String s7 = "";
+            if (p1.equals("0") && p3.equals("0")){
+                Collections.reverse(Arrays.asList(parts));
+                for (String s : parts) {
+                    int i = parseInt(s);
+                    s7 += (String.format("%08d", new BigInteger(Long.toBinaryString((long)i))));
 
-//                String binary = Integer.toBinaryString(i);
-//                System.out.println(binary);
+                }
+                System.out.println( Long.parseLong(s7, 2));   // returns long
+
+            } else if (p1.equals("0") && p3.equals("1")){
+                for (String s : parts) {
+                    int i = parseInt(s);
+                    s7 += (String.format("%08d", new BigInteger(Long.toBinaryString((long)i))));
+                }
+                System.out.println( Long.parseLong(s7, 2));   // returns long
+
+            } else {
 
             }
 
+
             return true;
+
         } catch (NumberFormatException nfe) {
+            System.out.println("ERROR");
             return false;
         }
-
     }
 
+    // Convert long number into ip address
+    public static void endian(String p1, String p2,  String p3 ) {
 
-    public static int ConvertToIp (Long l2) {
         try {
 
-            System.out.println("testing 1234.. " + Long.toString(l2, 2)); // testing - print
+            Long l2 = Long.parseLong(p2, 10);
 
             // *** convert long l1 to string of binary ***
             String s2 = Long.toBinaryString(l2);
@@ -83,42 +106,34 @@ public class Main {
             // print out the new array of strings every 8 digits
             String separator = "";  // separator here is your "."
             String s4 = "";
-            for (String s : thisCombo2) {
-                int i = parseInt(s, 2);
-                String s5 =  Integer.toString(i);
-                s4 += (separator + s5);
-                separator = ".";
+
+            if (p3.equals("1")) {
+                for (String s : thisCombo2) {
+                    int i = parseInt(s, 2);
+                    String s5 = Integer.toString(i);
+                    s4 += (separator + s5);
+                    separator = ".";
+                }
+            }  else if (p3.equals("0")) { // convert to small endian
+                // flip small endian
+                Collections.reverse(Arrays.asList(thisCombo2));
+                for (String s : thisCombo2) {
+                    int i = parseInt(s, 2);
+                    String s5 = Integer.toString(i);
+                    s4 += (separator + s5);
+                    separator = ".";
+                }
             }
 
-//            System.out.println(s4); // testing
-            validIP(s4); // call validIP method to test if ip is valid
-
-            // flip small endian
-            Collections.reverse(Arrays.asList(thisCombo2));
-
-//            TESTING
-
-            String separator2 = "";  // separator here is your "."
-            String s6 = "";
-            // print array for testing
-            for (String s : thisCombo2) {
-                int i = parseInt(s, 2);
-                String s5 =  Integer.toString(i);
-                s6 += (separator2 + s5);
-                separator2 = ".";
+            if (validIP(p1,s4, p3)){
+                System.out.println(s4); // testing
+            } else {
             }
-
-            System.out.println(s6); // testing
-            validIP(s6);
-
 
         } catch (NumberFormatException nfe) {
+            System.out.println("ERROR");
 
         }
 
-        return 0;
-
-
     } // end ConvertToIp method
-
 } // end Main class
